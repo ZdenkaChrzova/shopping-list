@@ -32,10 +32,19 @@ const defs=[
 ['drugstore','Drogerie a hygiena','🧴','#ede9fe','#6d28d9',['Toaletní papír','Papírové kapesníky','Mýdlo','Sprchový gel','Šampon','Kondicionér','Zubní pasta','Zubní kartáček','Deodorant','Vatové tampony','Holicí potřeby']],
 ['household','Domácnost a úklid','🧽','#f1f5f9','#475569',['Prostředek na nádobí','Tablety do myčky','Prací gel','Aviváž','Čisticí prostředek','Houbičky','Hadříky','Pytle na odpadky','Papírové utěrky','Alobal','Pečicí papír','Potravinová fólie']],
 ['pets','Pro zvířata','🐾','#fef9c3','#a16207',['Granule','Konzervy','Pamlsky','Stelivo','Sáčky na exkrementy','Hračka','Šampon pro zvířata']],
+['pharmacy','Lékárna','💊','#fce7f3','#be185d',['Valetol','Dulcolax','Pangrol','Vaxol','Normison','B-Komplex','Chrom','Diosmin','Biosil','Vitamín C','Multivitamíny','Paracetamol','Ibuprofen','Antihistaminikum','Pastilky na bolest v krku','Nosní sprej','Přípravek proti kašli','Rehydratační roztok','Aktivní uhlí','Dezinfekce','Náplasti','Obvaz','Teploměr']],
 ['other','Ostatní','🛍️','#f3f4f6','#4b5563',['Baterie','Žárovky','Svíčky','Zápalky','Lepicí páska','Přání nebo dárek','Květiny']]
 ];
 const fresh=()=>defs.map(([id,name,icon,color,accent,names])=>({id,name,icon,color,accent,items:names.map((name,i)=>({id:id+'-'+i,name,quantity:1,bought:false,needed:false}))}));
-let categories;try{categories=JSON.parse(localStorage.getItem(DATA_KEY))||fresh()}catch{categories=fresh()}
+const migrateCategories=(stored)=>{
+ const pharmacyDefault=fresh().find(c=>c.id==='pharmacy');
+ if(!Array.isArray(stored))return fresh();
+ const pharmacyIndex=stored.findIndex(c=>c.id==='pharmacy');
+ if(pharmacyIndex<0){const otherIndex=stored.findIndex(c=>c.id==='other');const next=[...stored];next.splice(otherIndex<0?next.length:otherIndex,0,pharmacyDefault);return next}
+ const existing=stored[pharmacyIndex],names=new Set(existing.items.map(i=>i.name));
+ const next=[...stored];next[pharmacyIndex]={...existing,icon:'💊',color:'#fce7f3',accent:'#be185d',items:[...existing.items,...pharmacyDefault.items.filter(i=>!names.has(i.name))]};return next
+};
+let categories;try{categories=migrateCategories(JSON.parse(localStorage.getItem(DATA_KEY)))}catch{categories=fresh()}
 let open=new Set(), search='', showNeededOnly=false;
 if(localStorage.getItem(THEME_KEY)==='dark')document.body.classList.add('dark');
 const save=()=>localStorage.setItem(DATA_KEY,JSON.stringify(categories));
