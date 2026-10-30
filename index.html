@@ -53,7 +53,7 @@ function render(){
  const all=categories.flatMap(c=>c.items), bought=all.filter(i=>i.bought).length, needed=all.filter(i=>i.needed).length, q=search.trim().toLowerCase();
  const shown=categories.map(c=>({...c,shown:c.items.filter(i=>(!q||i.name.toLowerCase().includes(q))&&(!showNeededOnly||i.needed))})).filter(c=>showNeededOnly?c.shown.length:(!q||c.name.toLowerCase().includes(q)||c.shown.length));
  document.getElementById('app').innerHTML=`<div class="wrap"><header class="hero"><div class="heroTop"><div><div class="eyebrow">Můj nákupní seznam</div><h1>Shopping List</h1><p>Přehledně podle kategorií a vždy po ruce.</p></div><div class="tools"><button class="theme" onclick="toggleTheme()"><span>${document.body.classList.contains('dark')?'☀️':'🌙'}</span> <span>${document.body.classList.contains('dark')?'Světlý':'Tmavý'}</span></button><button class="iconBtn cart">🛒</button></div></div><div class="stats"><div class="stat"><b>${all.length}</b><small>Celkem</small></div><div class="stat"><b class="amber">${needed}</b><small>K nákupu</small></div><div class="stat"><b class="green">${bought}</b><small>Koupeno</small></div></div></header>
- <div class="row searchRow"><input class="field" value="${esc(search)}" oninput="setSearch(this.value)" placeholder="Hledat položku nebo kategorii…"><button class="secondary" ${bought?'':'disabled'} onclick="clearBought()">Smazat koupené</button><button class="${showNeededOnly?'primary':'secondary'}" onclick="toggleNeededOnly()">🛒 ${showNeededOnly?'Zobrazit vše':'Jen k nákupu'}</button></div>
+ <div class="row searchRow"><input class="field" value="${esc(search)}" oninput="setSearch(this.value)" placeholder="Hledat položku nebo kategorii…"><button class="secondary" ${needed?'':'disabled'} onclick="emptyCart()">Vyprázdni košík</button><button class="${showNeededOnly?'primary':'secondary'}" onclick="toggleNeededOnly()">🛒 ${showNeededOnly?'Zobrazit vše':'Jen k nákupu'}</button></div>
  <div class="row box"><input id="newCat" class="field" placeholder="Název nové kategorie…" onkeydown="if(event.key==='Enter')addCategory()"><button class="primary" onclick="addCategory()">+ Přidat</button></div>
  <div class="categories">${shown.map(catHTML).join('')}</div>${shown.length?'':'<div class="empty">Nic odpovídajícího nebylo nalezeno.</div>'}<div class="footer">Změny a zvolený vzhled se automaticky ukládají v tomto zařízení.</div></div>`;
 }
@@ -71,7 +71,7 @@ function renameItem(cid,iid){const i=categories.find(c=>c.id===cid).items.find(i
 function deleteItem(cid,iid){const c=categories.find(c=>c.id===cid);c.items=c.items.filter(i=>i.id!==iid);save();render()}
 function toggleBought(cid,iid){const i=categories.find(c=>c.id===cid).items.find(i=>i.id===iid);i.bought=!i.bought;save();render()}
 function qty(cid,iid,d){const i=categories.find(c=>c.id===cid).items.find(i=>i.id===iid);i.quantity=Math.max(1,i.quantity+d);save();render()}
-function clearBought(){if(confirm('Smazat všechny koupené položky?')){categories.forEach(c=>c.items=c.items.filter(i=>!i.bought));save();render()}}
+function emptyCart(){if(confirm('Vyprázdnit košík? Položky zůstanou uložené v seznamu.')){categories.forEach(c=>c.items.forEach(i=>{if(i.needed){i.needed=false;i.bought=false}}));save();render()}}
 render();
 </script>
 </body></html>
