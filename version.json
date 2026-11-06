@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "date": "2026-11-06",
+  "title": "Verze a aktualizace",
+  "changes": [
+    "Číslo verze je nově viditelné v horní části úvodní obrazovky.",
+    "Aplikace automaticky upozorní na novou verzi a zobrazí přehled změn.",
+    "Přidána historie verzí Co je nového.",
+    "Opraveno překrytí horní části aplikace stavovým řádkem na mobilních zařízeních."
+  ],
+  "history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-11-06",
+      "changes": [
+        "Viditelné číslo verze v záhlaví.",
+        "Automatická kontrola aktualizací.",
+        "Přehled změn a historie verzí.",
+        "Respektování bezpečné horní oblasti na iPhonech."
+      ]
+    }
+  ]
+}
