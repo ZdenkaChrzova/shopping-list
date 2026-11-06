@@ -1,14 +1,20 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "date": "2026-11-06",
-  "title": "Verze a aktualizace",
+  "title": "Doplnění copyrightu",
   "changes": [
-    "Číslo verze je nově viditelné v horní části úvodní obrazovky.",
-    "Aplikace automaticky upozorní na novou verzi a zobrazí přehled změn.",
-    "Přidána historie verzí Co je nového.",
-    "Opraveno překrytí horní části aplikace stavovým řádkem na mobilních zařízeních."
+    "Do spodní části aplikace byl přidán copyright © 2026 Zdeňka Chrzová.",
+    "Copyright je umístěný pod odkazem Co je nového a je viditelný ve světlém i tmavém režimu."
   ],
   "history": [
+    {
+      "version": "1.0.1",
+      "date": "2026-11-06",
+      "changes": [
+        "Do spodní části aplikace byl přidán copyright © 2026 Zdeňka Chrzová.",
+        "Copyright je umístěný pod odkazem Co je nového a je viditelný ve světlém i tmavém režimu."
+      ]
+    },
     {
       "version": "1.0.0",
       "date": "2026-11-06",

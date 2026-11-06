@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
-  <title>Shopping List 1.0.0</title>
+  <title>Shopping List 1.0.1</title>
   <style>
     :root{--bg:#f5f5f4;--card:#fff;--soft:#f8fafc;--text:#1e293b;--muted:#94a3b8;--line:#e2e8f0;--head:#0f172a;--green:#10b981;--input:#fff}
     body.dark{--bg:#020617;--card:#0f172a;--soft:#1e293b;--text:#f1f5f9;--muted:#64748b;--line:#1e293b;--head:#0f172a;--input:#1e293b}
@@ -39,11 +39,11 @@
  </section>
 </div>
 <div class="modalBackdrop" id="historyModal" hidden role="presentation">
- <section class="modalCard" role="dialog" aria-modal="true" aria-labelledby="historyTitle"><div class="modalHead"><div><h2 id="historyTitle">Co je nového</h2><p class="updateMeta">Nainstalovaná verze 1.0.0</p></div><button class="modalClose" id="closeHistory" type="button" aria-label="Zavřít">×</button></div><div class="releaseList" id="releaseList"></div></section>
+ <section class="modalCard" role="dialog" aria-modal="true" aria-labelledby="historyTitle"><div class="modalHead"><div><h2 id="historyTitle">Co je nového</h2><p class="updateMeta">Nainstalovaná verze 1.0.1</p></div><button class="modalClose" id="closeHistory" type="button" aria-label="Zavřít">×</button></div><div class="releaseList" id="releaseList"></div></section>
 </div>
 <script>
 const DATA_KEY='shopping-list-cz-static-v1', THEME_KEY='shopping-list-theme';
-const APP_VERSION='1.0.0', UPDATE_SEEN_KEY='shopping-list-update-seen';
+const APP_VERSION='1.0.1', UPDATE_SEEN_KEY='shopping-list-update-seen';
 let remoteRelease=null, swRegistration=null;
 const $=id=>document.getElementById(id);
 function compareVersions(a,b){const aa=String(a||'0').split(/[.-]/).map(Number),bb=String(b||'0').split(/[.-]/).map(Number);for(let i=0;i<Math.max(aa.length,bb.length);i++){const d=(aa[i]||0)-(bb[i]||0);if(d)return d>0?1:-1}return 0}
@@ -92,7 +92,7 @@ function render(){
  document.getElementById('app').innerHTML=`<div class="wrap"><header class="hero"><div class="heroTop"><div><div class="eyebrow">Můj nákupní seznam <span class="versionBadge">v${APP_VERSION}</span></div><h1>Shopping List</h1><p>Přehledně podle kategorií a vždy po ruce.</p></div><div class="tools"><button class="theme" onclick="toggleTheme()"><span>${document.body.classList.contains('dark')?'☀️':'🌙'}</span> <span>${document.body.classList.contains('dark')?'Světlý':'Tmavý'}</span></button><button class="iconBtn cart">🛒</button></div></div><div class="stats"><div class="stat"><b>${all.length}</b><small>Celkem</small></div><div class="stat"><b class="amber">${needed}</b><small>K nákupu</small></div><div class="stat"><b class="green">${bought}</b><small>Koupeno</small></div></div></header><section class="updateNotice" id="updateNotice" hidden><div><strong id="updateNoticeTitle">Je dostupná nová verze</strong><span id="updateNoticeText"></span></div><button id="openUpdateInfo" type="button">Zobrazit změny</button></section>
  <div class="row searchRow"><input class="field" value="${esc(search)}" oninput="setSearch(this.value)" placeholder="Hledat položku nebo kategorii…"><button class="secondary" ${needed?'':'disabled'} onclick="emptyCart()">Vyprázdni košík</button><button class="${showNeededOnly?'primary':'secondary'}" onclick="toggleNeededOnly()">🛒 ${showNeededOnly?'Zobrazit vše':'Jen k nákupu'}</button></div>
  <div class="row box"><input id="newCat" class="field" placeholder="Název nové kategorie…" onkeydown="if(event.key==='Enter')addCategory()"><button class="primary" onclick="addCategory()">+ Přidat</button></div>
- <div class="categories">${shown.map(catHTML).join('')}</div>${shown.length?'':'<div class="empty">Nic odpovídajícího nebylo nalezeno.</div>'}<div class="footer">Změny a zvolený vzhled se automaticky ukládají v tomto zařízení.<br><button type="button" onclick="openHistory()">Co je nového · verze ${APP_VERSION}</button></div></div>`;
+ <div class="categories">${shown.map(catHTML).join('')}</div>${shown.length?'':'<div class="empty">Nic odpovídajícího nebylo nalezeno.</div>'}<div class="footer">Změny a zvolený vzhled se automaticky ukládají v tomto zařízení.<br><button type="button" onclick="openHistory()">Co je nového · verze ${APP_VERSION}</button><div style="margin-top:8px">© 2026 Zdeňka Chrzová</div></div></div>`;
 }
 function catHTML(c){const isOpen=open.has(c.id)||search.trim()||showNeededOnly;return `<section class="category"><div class="catHead"><button class="catIcon" style="background:${c.color};color:${c.accent}" onclick="toggle('${c.id}')">${c.icon||'🛍️'}</button><button class="catTitle" onclick="toggle('${c.id}')"><b>${esc(c.name)}</b><small>${c.items.length} položek · ${c.items.filter(i=>i.bought).length} koupeno</small></button><button class="mini" onclick="renameCategory('${c.id}')">✎</button><button class="mini danger" onclick="deleteCategory('${c.id}')">×</button><button class="mini" onclick="toggle('${c.id}')">${isOpen?'▲':'▼'}</button></div>${isOpen?`<div class="items">${c.shown.map(i=>itemHTML(c,i)).join('')}${c.shown.length?'':'<div class="empty">V této kategorii zatím nic není.</div>'}<div class="addItem"><input id="add-${c.id}" class="field" placeholder="Přidat položku…" onkeydown="if(event.key==='Enter')addItem('${c.id}')"><button class="primary" onclick="addItem('${c.id}')">+</button></div></div>`:''}</section>`}
 function itemHTML(c,i){return `<div class="item ${i.bought?'bought':''}"><button class="check" onclick="toggleBought('${c.id}','${i.id}')">✓</button><button class="name" onclick="renameItem('${c.id}','${i.id}')">${esc(i.name)}</button><button class="mini" style="background:${i.needed?'#fbbf24':'transparent'};border-radius:10px" onclick="toggleNeeded('${c.id}','${i.id}')">🛒</button><div class="qty"><button onclick="qty('${c.id}','${i.id}',-1)">−</button><span>${i.quantity}</span><button onclick="qty('${c.id}','${i.id}',1)">+</button></div><button class="mini danger" onclick="deleteItem('${c.id}','${i.id}')">×</button></div>`}
@@ -117,7 +117,7 @@ $('updateModal').onclick=event=>{if(event.target===$('updateModal'))closeUpdateD
 $('closeHistory').onclick=()=>$('historyModal').hidden=true;
 $('historyModal').onclick=event=>{if(event.target===$('historyModal'))$('historyModal').hidden=true};
 document.addEventListener('click',event=>{if(event.target?.id==='openUpdateInfo'&&remoteRelease)openUpdateDialog(remoteRelease,compareVersions(remoteRelease.version,APP_VERSION)>0)});
-if('serviceWorker' in navigator){let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;localStorage.setItem(UPDATE_SEEN_KEY,remoteRelease?.version||APP_VERSION);location.reload()});addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=1.0.0',{updateViaCache:'none'}).then(reg=>{swRegistration=reg;reg.update()}).catch(error=>console.info('Service worker se nepodařilo zaregistrovat:',error.message)))}
+if('serviceWorker' in navigator){let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;localStorage.setItem(UPDATE_SEEN_KEY,remoteRelease?.version||APP_VERSION);location.reload()});addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=1.0.1',{updateViaCache:'none'}).then(reg=>{swRegistration=reg;reg.update()}).catch(error=>console.info('Service worker se nepodařilo zaregistrovat:',error.message)))}
 checkForUpdates();
 </script>
 </body></html>
